@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
+#import "PTTokyoCondition.h"
 
 @interface PTTokyoStore : NSObject {
     TCTDB *tdb;
@@ -34,6 +35,6 @@
 - (BOOL)setIndexForColumn:(NSString *)name type:(NSInteger)type;
 - (NSArray *)allObjects;
 - (NSArray *)allObjectsForClass:(NSString *)name;
-- (NSArray *)searchObjects;
+- (NSArray *)searchObjectsWithConditions:(NSArray *)conditions;
 
 @end

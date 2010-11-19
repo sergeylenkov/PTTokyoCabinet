@@ -92,7 +92,7 @@
     NSMutableArray *results = [[NSMutableArray alloc] init];
     
     TCMAP *cols;
-    const char *pk;
+    const char *name;
     
     tctdbiterinit(tdb);
     
@@ -101,9 +101,9 @@
         
         tcmapiterinit(cols);
         
-        while ((pk = tcmapiternext2(cols)) != NULL) {            
-            NSString *key = [NSString stringWithUTF8String:pk];
-            NSString *value = [NSString stringWithUTF8String:tcmapget2(cols, pk)];
+        while ((name = tcmapiternext2(cols)) != NULL) {            
+            NSString *key = [NSString stringWithUTF8String:name];
+            NSString *value = [NSString stringWithUTF8String:tcmapget2(cols, name)];
 
             if ([key isEqualToString:@""]) {
                 key = @"_id";
@@ -136,7 +136,9 @@
     return results;
 }
 
-- (NSArray *)searchObjects {
+- (NSArray *)searchObjectsWithConditions:(NSArray *)conditions {
+    NSMutableArray *results = [[NSMutableArray alloc] init];
+    
     TDBQRY *qry;
     TCLIST *res;
     TCMAP *cols;
@@ -145,10 +147,12 @@
         
     qry = tctdbqrynew(tdb);
     
-    tctdbqryaddcond(qry, "age", TDBQCNUMGE, "20");
-    tctdbqryaddcond(qry, "lang", TDBQCSTROR, "ja,en");
-    tctdbqrysetorder(qry, "name", TDBQOSTRASC);
-    tctdbqrysetlimit(qry, 10, 0);
+    for (PTTokyoCondition *condition in conditions) {
+        tctdbqryaddcond(qry, [condition.key UTF8String], condition.condition, [condition.value UTF8String]);
+    }
+
+    //tctdbqrysetorder(qry, "name", TDBQOSTRASC);
+    //tctdbqrysetlimit(qry, 10, 0);
     
     res = tctdbqrysearch(qry);
     
@@ -157,20 +161,26 @@
         cols = tctdbget(tdb, rbuf, rsiz);
         
         if (cols) {
-            printf("%s", rbuf);
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+            
+            [dict setObject:[NSString stringWithUTF8String:rbuf] forKey:@"_id"];
+
             tcmapiterinit(cols);
+            
             while ((name = tcmapiternext2(cols)) != NULL) {
-                printf("\t%s\t%s", name, tcmapget2(cols, name));
+                [dict setObject:[NSString stringWithUTF8String:tcmapget2(cols, name)] forKey:[NSString stringWithUTF8String:name] ];
             }
 
-            tcmapdel(cols);
+            [results addObject:[dict autorelease]];
+            
+            tcmapdel(cols);            
         }
     }
     
     tclistdel(res);
     tctdbqrydel(qry);
     
-    return nil;
+    return results;
 }
     
 - (void)dealloc {

@@ -38,14 +38,14 @@
     return self;
 }
 
-- (void)addStoreForClass:(Class)class {
-    PTTokyoStore *store = [[PTTokyoStore alloc] initWithPath:[self fullPath] name:NSStringFromClass(class)];
+- (void)addStore:(NSString *)name {
+    PTTokyoStore *store = [[PTTokyoStore alloc] initWithPath:[self fullPath] name:name];
     [stores setObject:store forKey:name];
     [store release];
 }
 
-- (PTTokyoStore *)storeForClass:(Class)class {
-    return [stores objectForKey:NSStringFromClass(class)];
+- (PTTokyoStore *)storeWithName:(NSString *)name {
+    return [stores objectForKey:name];
 }
 
 - (void)setBundleBitOfFile:(NSString*)path toBool:(BOOL)newValue {

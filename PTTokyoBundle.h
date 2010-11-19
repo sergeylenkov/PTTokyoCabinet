@@ -21,8 +21,8 @@
 
 - (id)initWithPath:(NSString *)path name:(NSString *)name icon:(NSImage *)icon;
 
-- (void)addStoreForClass:(Class)class;
-- (PTTokyoStore *)storeForClass:(Class)class;
+- (void)addStore:(NSString *)name;
+- (PTTokyoStore *)storeWithName:(NSString *)name;
 
 - (void)setBundleBitOfFile:(NSString*)path toBool:(BOOL)newValue;
 - (NSString *)fullPath;
