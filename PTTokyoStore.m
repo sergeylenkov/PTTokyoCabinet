@@ -58,7 +58,7 @@
     return [NSString stringWithFormat:@"%ld", (long)tctdbgenuid(tdb)];
 }
 
-- (BOOL)insertDictionary:(NSDictionary *)dict forKey:(NSString *)key {
+- (BOOL)insertDictionary:(NSDictionary *)dict withKey:(NSString *)key {
     TCMAP *cols;
     
     cols = tcmapnew();
@@ -80,7 +80,7 @@
     return YES;
 }
 
-- (BOOL)removeObjectForKey:(NSString *)key {
+- (BOOL)removeObjectWithKey:(NSString *)key {
     return tctdbout2(tdb, [key UTF8String]);
 }
 
@@ -118,22 +118,6 @@
     }
     
     return [results autorelease];
-}
-
-- (NSArray *)allObjectsForClass:(NSString *)name {
-    NSMutableArray *results = [[NSMutableArray alloc] init];
-    
-    for (NSDictionary *dict in [self allObjects]) {
-        id object = [[NSClassFromString(name) alloc] init];
-        
-        for (id key in dict) {
-            [object setValue:[dict objectForKey:key] forKey:key];
-        }
-        
-        [results addObject:object];
-    }
-    
-    return results;
 }
 
 - (NSArray *)searchObjectsWithConditions:(NSArray *)conditions {

@@ -30,11 +30,10 @@
 - (NSInteger)count;
 - (NSInteger)size;
 - (NSString *)generateUID;
-- (BOOL)insertDictionary:(NSDictionary *)dict forKey:(NSString *)key;
-- (BOOL)removeObjectForKey:(NSString *)key;
+- (BOOL)insertDictionary:(NSDictionary *)dict withKey:(NSString *)key;
+- (BOOL)removeObjectWithKey:(NSString *)key;
 - (BOOL)setIndexForColumn:(NSString *)name type:(NSInteger)type;
 - (NSArray *)allObjects;
-- (NSArray *)allObjectsForClass:(NSString *)name;
 - (NSArray *)searchObjectsWithConditions:(NSArray *)conditions;
 
 @end
