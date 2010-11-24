@@ -14,6 +14,32 @@
 #include <stdint.h>
 #import "PTTokyoCondition.h"
 
+typedef enum {
+    TCStringEqual = TDBQCSTREQ,
+    TCStringIncude = TDBQCSTRINC,
+    TCStringBegin = TDBQCSTRBW,
+    TCStringEnd = TDBQCSTREW,
+    TCStringIncludeAll = TDBQCSTRAND,
+    TCStringIncludeOne = TDBQCSTROR,
+    TCStringEqualOne = TDBQCSTROREQ,
+    TCStringEqualRegex = TDBQCSTRRX,
+    TCNumberEqual = TDBQCNUMEQ,
+    TCNumberGreater = TDBQCNUMGT,
+    TCNumberGreaterOrEqual = TDBQCNUMGE,
+    TCNumberLess = TDBQCNUMLT,
+    TCNumberLessOrEqual = TDBQCNUMLE,
+    TCNumberBeeween = TDBQCNUMBT,
+    TCNumberEqualOne = TDBQCNUMOREQ 
+} PTTokyoConditionTypes;
+
+typedef enum {
+    TDStringAscending = TDBQOSTRASC,
+    TDStringDescending = TDBQOSTRDESC,
+    TDNumberAscending = TDBQONUMASC,
+    TDNumberDscending = TDBQONUMDESC
+} PTTokyoOrderTypes;
+
+
 @interface PTTokyoStore : NSObject {
     TCTDB *tdb;
     NSString *storeName;
@@ -35,5 +61,6 @@
 - (BOOL)setIndexForColumn:(NSString *)name type:(NSInteger)type;
 - (NSArray *)allObjects;
 - (NSArray *)searchObjectsWithConditions:(NSArray *)conditions;
+- (NSArray *)searchObjectsWithConditions:(NSArray *)conditions orderBy:(NSString *)key orderType:(PTTokyoOrderTypes)type;
 
 @end

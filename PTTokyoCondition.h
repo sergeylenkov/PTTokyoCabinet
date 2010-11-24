@@ -9,24 +9,6 @@
 #import <Cocoa/Cocoa.h>
 #include <tctdb.h>
 
-typedef enum {
-    TCStringEqual = TDBQCSTREQ,
-    TCStringIncude = TDBQCSTRINC,
-    TCStringBegin = TDBQCSTRBW,
-    TCStringEnd = TDBQCSTREW,
-    TCStringIncludeAll = TDBQCSTRAND,
-    TCStringIncludeOne = TDBQCSTROR,
-    TCStringEqualOne = TDBQCSTROREQ,
-    TCStringEqualRegex = TDBQCSTRRX,
-    TCNumberEqual = TDBQCNUMEQ,
-    TCNumberGreater = TDBQCNUMGT,
-    TCNumberGreaterOrEqual = TDBQCNUMGE,
-    TCNumberLess = TDBQCNUMLT,
-    TCNumberLessOrEqual = TDBQCNUMLE,
-    TCNumberBeeween = TDBQCNUMBT,
-    TCNumberEqualOne = TDBQCNUMOREQ 
-} PTTokyoConditionTypes;
-
 @interface PTTokyoCondition : NSObject {
     NSString *key;
     NSString *value;

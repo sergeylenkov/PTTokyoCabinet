@@ -134,10 +134,7 @@
     for (PTTokyoCondition *condition in conditions) {
         tctdbqryaddcond(qry, [condition.key UTF8String], condition.condition, [condition.value UTF8String]);
     }
-
-    //tctdbqrysetorder(qry, "name", TDBQOSTRASC);
-    //tctdbqrysetlimit(qry, 10, 0);
-    
+   
     res = tctdbqrysearch(qry);
     
     for (int i = 0; i < tclistnum(res); i++) {
@@ -164,9 +161,56 @@
     tclistdel(res);
     tctdbqrydel(qry);
     
-    return results;
+    return [results autorelease];
 }
+
+- (NSArray *)searchObjectsWithConditions:(NSArray *)conditions orderBy:(NSString *)key orderType:(PTTokyoOrderTypes)type {
+    NSMutableArray *results = [[NSMutableArray alloc] init];
     
+    TDBQRY *qry;
+    TCLIST *res;
+    TCMAP *cols;
+    int rsiz;
+    const char *rbuf, *name;
+    
+    qry = tctdbqrynew(tdb);
+    
+    for (PTTokyoCondition *condition in conditions) {
+        tctdbqryaddcond(qry, [condition.key UTF8String], condition.condition, [condition.value UTF8String]);
+    }
+    
+    tctdbqrysetorder(qry, [key UTF8String], type);
+    //tctdbqrysetlimit(qry, 10, 0);
+    
+    res = tctdbqrysearch(qry);
+    
+    for (int i = 0; i < tclistnum(res); i++) {
+        rbuf = tclistval(res, i, &rsiz);
+        cols = tctdbget(tdb, rbuf, rsiz);
+        
+        if (cols) {
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+            
+            [dict setObject:[NSString stringWithUTF8String:rbuf] forKey:@"_id"];
+            
+            tcmapiterinit(cols);
+            
+            while ((name = tcmapiternext2(cols)) != NULL) {
+                [dict setObject:[NSString stringWithUTF8String:tcmapget2(cols, name)] forKey:[NSString stringWithUTF8String:name] ];
+            }
+            
+            [results addObject:[dict autorelease]];
+            
+            tcmapdel(cols);            
+        }
+    }
+    
+    tclistdel(res);
+    tctdbqrydel(qry);
+    
+    return [results autorelease];
+}
+
 - (void)dealloc {
     [storeName release];
     [storePath release];
