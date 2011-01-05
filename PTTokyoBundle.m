@@ -73,6 +73,13 @@
     return [bundlePath stringByAppendingPathComponent:bundleName];
 }
 
+- (void)close {
+    for (id key in stores) {
+        PTTokyoStore *store = [stores objectForKey:key];
+        [store close];
+    }
+}
+
 - (void)dealloc {
     [bundleName release];
     [bundlePath release];

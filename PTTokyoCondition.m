@@ -8,20 +8,19 @@
 
 #import "PTTokyoCondition.h"
 
-
 @implementation PTTokyoCondition
 
 @synthesize key;
 @synthesize value;
-@synthesize condition;
+@synthesize type;
 
-+ (PTTokyoCondition *)conditionWithKey:(NSString *)_key value:(NSString *)_value condition:(NSInteger)_condition {
-    PTTokyoCondition *tokyoCondition = [[PTTokyoCondition alloc] init];
-    tokyoCondition.key = _key;
-    tokyoCondition.value = _value;
-    tokyoCondition.condition = _condition;
++ (PTTokyoCondition *)conditionWithKey:(NSString *)_key value:(NSString *)_value type:(PTTokyoConditionTypes)_type {
+    PTTokyoCondition *condition = [[PTTokyoCondition alloc] init];
+    condition.key = _key;
+    condition.value = _value;
+    condition.type = _type;
     
-    return [tokyoCondition autorelease];
+    return [condition autorelease];
 }
 
 @end

@@ -8,17 +8,18 @@
 
 #import <Cocoa/Cocoa.h>
 #include <tctdb.h>
+#import "PTTokyoTypes.h"
 
 @interface PTTokyoCondition : NSObject {
     NSString *key;
     NSString *value;
-    NSInteger condition;
+    NSInteger type;
 }
 
 @property (nonatomic, copy) NSString *key;
 @property (nonatomic, copy) NSString *value;
-@property (nonatomic, assign) NSInteger condition;
+@property (nonatomic, assign) NSInteger type;
 
-+ (PTTokyoCondition *)conditionWithKey:(NSString *)key value:(NSString *)value condition:(NSInteger)condition;
++ (PTTokyoCondition *)conditionWithKey:(NSString *)_key value:(NSString *)_value type:(PTTokyoConditionTypes)_type;
 
 @end

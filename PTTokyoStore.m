@@ -58,7 +58,7 @@
     return [NSString stringWithFormat:@"%ld", (long)tctdbgenuid(tdb)];
 }
 
-- (BOOL)insertDictionary:(NSDictionary *)dict withKey:(NSString *)key {
+- (BOOL)insertDictionary:(NSDictionary *)dict withKey:(NSString *)pk {
     TCMAP *cols;
     
     cols = tcmapnew();
@@ -66,8 +66,6 @@
     for (id key in dict) {
         tcmapput2(cols, [key UTF8String], [[dict objectForKey:key] UTF8String]);
     }
-        
-    NSString *pk = [self generateUID];
         
     if (!tctdbput(tdb, [pk UTF8String], [pk length], cols)) {
         int ecode = tctdbecode(tdb);
@@ -120,51 +118,7 @@
     return [results autorelease];
 }
 
-- (NSArray *)searchObjectsWithConditions:(NSArray *)conditions {
-    NSMutableArray *results = [[NSMutableArray alloc] init];
-    
-    TDBQRY *qry;
-    TCLIST *res;
-    TCMAP *cols;
-    int rsiz;
-    const char *rbuf, *name;
-        
-    qry = tctdbqrynew(tdb);
-    
-    for (PTTokyoCondition *condition in conditions) {
-        tctdbqryaddcond(qry, [condition.key UTF8String], condition.condition, [condition.value UTF8String]);
-    }
-   
-    res = tctdbqrysearch(qry);
-    
-    for (int i = 0; i < tclistnum(res); i++) {
-        rbuf = tclistval(res, i, &rsiz);
-        cols = tctdbget(tdb, rbuf, rsiz);
-        
-        if (cols) {
-            NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-            
-            [dict setObject:[NSString stringWithUTF8String:rbuf] forKey:@"_id"];
-
-            tcmapiterinit(cols);
-            
-            while ((name = tcmapiternext2(cols)) != NULL) {
-                [dict setObject:[NSString stringWithUTF8String:tcmapget2(cols, name)] forKey:[NSString stringWithUTF8String:name] ];
-            }
-
-            [results addObject:[dict autorelease]];
-            
-            tcmapdel(cols);            
-        }
-    }
-    
-    tclistdel(res);
-    tctdbqrydel(qry);
-    
-    return [results autorelease];
-}
-
-- (NSArray *)searchObjectsWithConditions:(NSArray *)conditions orderBy:(NSString *)key orderType:(PTTokyoOrderTypes)type {
+- (NSArray *)searchObjects:(PTTokyoSearch *)search {
     NSMutableArray *results = [[NSMutableArray alloc] init];
     
     TDBQRY *qry;
@@ -175,15 +129,20 @@
     
     qry = tctdbqrynew(tdb);
     
-    for (PTTokyoCondition *condition in conditions) {
-        tctdbqryaddcond(qry, [condition.key UTF8String], condition.condition, [condition.value UTF8String]);
+    for (PTTokyoCondition *condition in search.conditions) {
+        tctdbqryaddcond(qry, [condition.key UTF8String], condition.type, [condition.value UTF8String]);
     }
-    
-    tctdbqrysetorder(qry, [key UTF8String], type);
-    //tctdbqrysetlimit(qry, 10, 0);
+
+    if ([search.orderByKey length] > 0) {
+        tctdbqrysetorder(qry, [search.orderByKey UTF8String], search.orderType);
+    }
+        
+    if (search.limit != -1 &&  search.offset != -1) {
+        tctdbqrysetlimit(qry, search.limit, search.offset);
+    }    
     
     res = tctdbqrysearch(qry);
-    
+
     for (int i = 0; i < tclistnum(res); i++) {
         rbuf = tclistval(res, i, &rsiz);
         cols = tctdbget(tdb, rbuf, rsiz);

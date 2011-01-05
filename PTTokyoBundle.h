@@ -27,4 +27,6 @@
 - (void)setBundleBitOfFile:(NSString*)path toBool:(BOOL)newValue;
 - (NSString *)fullPath;
 
+- (void)close;
+
 @end

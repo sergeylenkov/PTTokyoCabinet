@@ -12,33 +12,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
-#import "PTTokyoCondition.h"
-
-typedef enum {
-    TCStringEqual = TDBQCSTREQ,
-    TCStringIncude = TDBQCSTRINC,
-    TCStringBegin = TDBQCSTRBW,
-    TCStringEnd = TDBQCSTREW,
-    TCStringIncludeAll = TDBQCSTRAND,
-    TCStringIncludeOne = TDBQCSTROR,
-    TCStringEqualOne = TDBQCSTROREQ,
-    TCStringEqualRegex = TDBQCSTRRX,
-    TCNumberEqual = TDBQCNUMEQ,
-    TCNumberGreater = TDBQCNUMGT,
-    TCNumberGreaterOrEqual = TDBQCNUMGE,
-    TCNumberLess = TDBQCNUMLT,
-    TCNumberLessOrEqual = TDBQCNUMLE,
-    TCNumberBeeween = TDBQCNUMBT,
-    TCNumberEqualOne = TDBQCNUMOREQ 
-} PTTokyoConditionTypes;
-
-typedef enum {
-    TDStringAscending = TDBQOSTRASC,
-    TDStringDescending = TDBQOSTRDESC,
-    TDNumberAscending = TDBQONUMASC,
-    TDNumberDscending = TDBQONUMDESC
-} PTTokyoOrderTypes;
-
+#import "PTTokyoCabinet.h"
 
 @interface PTTokyoStore : NSObject {
     TCTDB *tdb;
@@ -56,11 +30,10 @@ typedef enum {
 - (NSInteger)count;
 - (NSInteger)size;
 - (NSString *)generateUID;
-- (BOOL)insertDictionary:(NSDictionary *)dict withKey:(NSString *)key;
+- (BOOL)insertDictionary:(NSDictionary *)dict withKey:(NSString *)pk;
 - (BOOL)removeObjectWithKey:(NSString *)key;
 - (BOOL)setIndexForColumn:(NSString *)name type:(NSInteger)type;
 - (NSArray *)allObjects;
-- (NSArray *)searchObjectsWithConditions:(NSArray *)conditions;
-- (NSArray *)searchObjectsWithConditions:(NSArray *)conditions orderBy:(NSString *)key orderType:(PTTokyoOrderTypes)type;
+- (NSArray *)searchObjects:(PTTokyoSearch *)search;
 
 @end
