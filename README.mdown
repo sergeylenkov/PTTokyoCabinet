@@ -1,2 +1,43 @@
-Using PTTokyoCabinet
+PTTokyoCabinet - small wrapper around [Tokyo Cabinet](http://fallabs.com/tokyocabinet/)
 ===================================
+
+Use PTTokyoBundle to store a few tokyo cabinet stores
+
+    PTTokyoBundle *sharedBundle = [[PTTokyoBundle alloc] initWithPath:@"~/Library/Application Support/Your App" name:@"Database" icon:[NSImage imageNamed:@"Bundle.icns"]];
+        
+    [sharedBundle addStore:@"Sales"];
+    [sharedBundle addStore:@"Reviews"];
+    [sharedBundle addStore:@"Ratings"];
+
+Insert object
+
+    PTTokyoStore *store = [bundle storeWithName:@"Sales"];
+
+	NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+
+	[dict setObject:@"Value 1" forKey:@"developer"];
+	[dict setObject:@"Value 2" forKey:@"application_name"];
+
+    [store insertDictionary:dict withKey:[store generateUID]];
+
+Delete object
+
+	PTTokyoStore *store = [bundle storeWithName:@"Sales"];
+	[store removeObjectWithKey:@"1"];
+
+Get all objects from store
+
+	PTTokyoStore *store = [[Data sharedBundle] storeWithName:@"Sales"];
+	NSArray *objects = [store allObjects];
+
+Search objects
+
+    PTTokyoStore *store = [[Data sharedBundle] storeWithName:@"Sales"];
+    PTTokyoSearch *search = [[PTTokyoSearch alloc] init];
+    
+    [search.conditions addObject:[PTTokyoCondition conditionWithKey:@"apple_id" value:@"12345" type:TCStringIncludeOne]];
+    [search orderBy:@"date" type:TONumberDescending];
+    
+    NSArray *sales = [store searchObjects:search];
+    
+    [search release];
