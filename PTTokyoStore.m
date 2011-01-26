@@ -155,7 +155,7 @@
             tcmapiterinit(cols);
             
             while ((name = tcmapiternext2(cols)) != NULL) {
-                [dict setObject:[NSString stringWithUTF8String:tcmapget2(cols, name)] forKey:[NSString stringWithUTF8String:name] ];
+                [dict setObject:[NSString stringWithUTF8String:tcmapget2(cols, name)] forKey:[NSString stringWithUTF8String:name]];
             }
             
             [results addObject:[dict autorelease]];
@@ -168,6 +168,31 @@
     tctdbqrydel(qry);
     
     return [results autorelease];
+}
+
+- (NSDictionary *)objectByKey:(NSString *)key {
+    TCMAP *cols;
+    const char *name;
+
+    cols = tctdbget(tdb, [key UTF8String], [key length]);
+    
+    if (cols) {
+        NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+        
+        [dict setObject:key forKey:@"_id"];
+        
+        tcmapiterinit(cols);
+        
+        while ((name = tcmapiternext2(cols)) != NULL) {
+            [dict setObject:[NSString stringWithUTF8String:tcmapget2(cols, name)] forKey:[NSString stringWithUTF8String:name]];
+        }
+               
+        tcmapdel(cols);
+        
+        return [dict autorelease];
+    } else {
+        return nil;
+    }
 }
 
 - (void)dealloc {

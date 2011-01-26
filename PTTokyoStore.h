@@ -35,5 +35,6 @@
 - (BOOL)setIndexForColumn:(NSString *)name type:(NSInteger)type;
 - (NSArray *)allObjects;
 - (NSArray *)searchObjects:(PTTokyoSearch *)search;
+- (NSDictionary *)objectByKey:(NSString *)key;
 
 @end
